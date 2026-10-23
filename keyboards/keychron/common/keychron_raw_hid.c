@@ -34,6 +34,8 @@
 #endif
 #if defined(LK_WIRELESS_ENABLE) || defined(KC_BLUETOOTH_ENABLE)
 #    include "wireless.h"
+#    include "transport.h"
+#    include "battery.h"
 #    ifdef LK_WIRELESS_ENABLE
 #        include "lkbt51.h"
 #    else
@@ -71,7 +73,11 @@ void get_support_feature(uint8_t *data) {
 #    endif
         ;
 
-    data[2] = (FEATURE_QUICK_START | FEATURE_NKRO) >> 8;
+    data[2] = (FEATURE_QUICK_START | FEATURE_NKRO
+#    if defined(LK_WIRELESS_ENABLE) || defined(KC_BLUETOOTH_ENABLE)
+               | FEATURE_BATTERY
+#    endif
+               ) >> 8;
 }
 
 #    ifdef ANANLOG_MATRIX
@@ -167,6 +173,18 @@ bool kc_raw_hid_rx(uint8_t src, uint8_t *data, uint8_t length) {
             data[1] = get_highest_layer(default_layer_state);
             data[2] = get_highest_layer(layer_state);
             break;
+
+#    if defined(LK_WIRELESS_ENABLE) || defined(KC_BLUETOOTH_ENABLE)
+        case KC_GET_BATTERY: {
+            uint16_t bat_voltage = battery_get_voltage();
+            data[1]              = battery_get_percentage();
+            data[2]              = bat_voltage & 0xFF;
+            data[3]              = (bat_voltage >> 8) & 0xFF;
+            data[4]              = battery_get_charging_state();
+            data[5]              = get_transport();
+            data[6]              = KC_BATTERY_MODEL_ID;
+        } break;
+#    endif
 
         case KC_MISC_CMD_GROUP:
             switch (data[1]) {

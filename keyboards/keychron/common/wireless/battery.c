@@ -158,6 +158,15 @@ uint8_t battery_get_percentage(void) {
         return 0;
 }
 
+uint8_t battery_get_charging_state(void) {
+#if defined(BAT_CHARGING_PIN)
+    if (usb_power_connected()) {
+        return gpio_read_pin(BAT_CHARGING_PIN) == BAT_CHARGING_LEVEL ? BAT_CHARGING : BAT_FULL_CHARGED;
+    }
+#endif
+    return BAT_NOT_CHARGING;
+}
+
 bool battery_is_empty(void) {
     return bat_empty > BATTERY_EMPTY_COUNT;
 }
