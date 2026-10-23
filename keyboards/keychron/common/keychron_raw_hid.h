@@ -25,6 +25,7 @@ enum {
     KC_GET_FIRMWARE_VERSION = 0xA1,
     KC_GET_SUPPORT_FEATURE  = 0xA2,
     KC_GET_DEFAULT_LAYER    = 0xA3,
+    KC_GET_BATTERY          = 0xA4,
     KC_MISC_CMD_GROUP       = 0xA7,
     KC_KEYCHRON_RGB         = 0xA8,
     KC_ANALOG_MATRIX        = 0xA9,
@@ -45,6 +46,7 @@ enum {
     // Byte 1
     FEATURE_QUICK_START         = 0x01U << 8,
     FEATURE_NKRO                = 0x01U << 9,
+    FEATURE_BATTERY             = 0x01U << 10,
 };
 
 enum {
@@ -86,3 +88,9 @@ enum {
 };
 
 void kc_raw_hid_send(uint8_t src, uint8_t *data, uint8_t len);
+
+// Model identifier carried in KC_GET_BATTERY replies (data[6]), same numbering as
+// Keychron/qmk_firmware#477. Define per keyboard in config.h; 0 means unspecified.
+#ifndef KC_BATTERY_MODEL_ID
+#    define KC_BATTERY_MODEL_ID 0
+#endif

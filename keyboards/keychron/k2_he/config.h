@@ -18,6 +18,9 @@
 
 #include "eeconfig_kb.h"
 
+/* Model identifier reported in KC_GET_BATTERY replies (data[6]) */
+#define KC_BATTERY_MODEL_ID 3
+
 /* External EEPROM Configuration*/
 #define I2C_DRIVER I2CD3
 #define I2C1_SCL_PIN A8
@@ -89,6 +92,9 @@
 
 /* Enable wireless NKRO */
 #    define WIRELESS_NKRO_ENABLE
+
+/* Answer raw HID requests over the wireless link, e.g. KC_GET_BATTERY via Keychron Link */
+#    define WILRESS_RAW_ENABLE
 #endif
 
 /* Factory Test Keys */
